@@ -6,7 +6,9 @@ from core.models import Book
 from book import serializers
 
 
-class BookViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
+class BookViewSet(viewsets.GenericViewSet,
+                  mixins.ListModelMixin,
+                  mixins.CreateModelMixin):
     """Manage books in the database"""
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
@@ -16,3 +18,7 @@ class BookViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     def get_queryset(self):
         """Return objects for the current authenticated user only"""
         return self.queryset
+
+    def perform_create(self, serializer):
+        """Create new Book"""
+        serializer.save()

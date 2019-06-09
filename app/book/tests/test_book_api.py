@@ -55,3 +55,23 @@ class PrivateBooksApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
+
+    def test_create_book_successful(self):
+        """Test that a book was created successfully"""
+        payload = {'isbn': '00001',
+                   'title': 'MOBY DICK',
+                   'authors': 'Herman Melville',
+                   'published_date': '1815',
+                   'pages': '900',
+                   'image': 'https://test.com'}
+
+        self.client.post(BOOK_URL, payload)
+        exists = Book.objects.all().exists()
+        self.assertTrue(exists)
+
+    def test_create_book_failure(self):
+        """Test that a book was not created"""
+        payload = {'isbn': ''}
+
+        res = self.client.post(BOOK_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
